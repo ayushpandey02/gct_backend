@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb+srv://admin:admin123@cluster0.fljruz9.mongodb.net/gct");
+mongoose.connect(process.env.MONGODB_URI);
 
 const formSchema = new mongoose.Schema({
     name: {
@@ -9,6 +9,11 @@ const formSchema = new mongoose.Schema({
         trim: true
     },
     age: {
+        type: Number,
+        required: true,
+        min: 0
+    },
+    mobileNumber: {
         type: Number,
         required: true,
         min: 0

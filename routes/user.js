@@ -68,6 +68,7 @@ router.post('/submit-form',
             const formData = {
                 name: req.body.name,
                 age: parseInt(req.body.age),
+                mobileNumber: parseInt(req.body.mobileNumber),
                 wardNumber: req.body.wardNumber,
                 role: req.body.role,
                 upiTransactionId: req.body.upiTransactionId,
