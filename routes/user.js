@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const path = require('path');
-const Form = require('../db'); // Assuming this is where your mongoose schema is
+const Form = require('../db');
 const cors = require('cors');
 
 // Configure multer for file upload
@@ -11,7 +10,8 @@ const storage = multer.diskStorage({
       cb(null, "uploads/")
     },
     filename: (req, file, cb) => {
-      cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname))
+      // Use Date.now() and original extension without path library
+      cb(null, `${file.fieldname}-${Date.now()}${file.originalname.match(/\.[0-9a-z]+$/i)[0]}`)
     },
   })
 
@@ -34,7 +34,7 @@ const upload = multer({
 
 // Configure CORS
 const corsOptions = {
-    origin: 'http://127.0.0.1:5500', // Your HTML form URL
+    origin: 'http://127.0.0.1:5500',
     methods: ['POST'],
     allowedHeaders: ['Content-Type', 'Authorization']
 };
