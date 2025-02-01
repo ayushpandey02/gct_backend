@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const Form = require('../db');
 const cors = require('cors');
+require("dotenv").config;
 
 // Configure multer for file upload
 const storage = multer.diskStorage({

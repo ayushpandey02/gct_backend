@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+require("dotenv").config;
 
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect('mongodb+srv://admin:admin123@cluster0.fljruz9.mongodb.net/gct');
 
 const formSchema = new mongoose.Schema({
     name: {
