@@ -43,7 +43,7 @@ const upload = multer({
 
 // CORS configuration remains the same
 const corsOptions = {
-    origin: 'http://127.0.0.1:5500',
+    origin: 'https://ayushpandey02.github.io/gct/',
     methods: ['POST', 'GET'],
     credentials: true,
     allowedHeaders: ['Content-Type']
