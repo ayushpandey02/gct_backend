@@ -42,13 +42,12 @@ const upload = multer({
 });
 
 // CORS configuration remains the same
-app.use(cors({
+
+router.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH', 'OPTIONS'],
     allowedHeaders: '*'
 }));
-
-router.use(cors(corsOptions));
 
 router.get('/success', (req,res) => {
     res.status(200).json({
