@@ -3,18 +3,26 @@ const router = express.Router();
 const multer = require('multer');
 const Form = require('../db');
 const cors = require('cors');
-require("dotenv").config;
+const cloudinary = require('../cloudinary');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-// Configure multer for file upload
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, "uploads/")
-    },
-    filename: (req, file, cb) => {
-      // Use Date.now() and original extension without path library
-      cb(null, `${file.fieldname}-${Date.now()}${file.originalname.match(/\.[0-9a-z]+$/i)[0]}`)
-    },
-  })
+// Configure Cloudinary storage
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'cricket-registration',
+        format: async (req, file) => {
+            // Extract extension from original file
+            const extension = file.originalname.match(/\.[0-9a-z]+$/i)[0].substring(1);
+            return extension;
+        },
+        public_id: (req, file) => {
+            // Recreate the same filename pattern as before
+            return `${file.fieldname}-${Date.now()}`;
+        },
+        transformation: [{ width: 500, height: 500, crop: 'limit' }]
+    }
+});
 
 // File filter function
 const fileFilter = (req, file, cb) => {
@@ -33,10 +41,9 @@ const upload = multer({
     }
 });
 
-// Configure CORS
-// user.js
+// CORS configuration remains the same
 const corsOptions = {
-    origin: 'http://127.0.0.1:5500', // Your frontend URL
+    origin: 'http://127.0.0.1:5500',
     methods: ['POST', 'GET'],
     credentials: true,
     allowedHeaders: ['Content-Type']
@@ -44,18 +51,11 @@ const corsOptions = {
 
 router.use(cors(corsOptions));
 
-// Create uploads directory
-const fs = require('fs');
-const dir = './uploads';
-if (!fs.existsSync(dir)){
-    fs.mkdirSync(dir);
-}
-
-// Fix file field names to match frontend
+// Modified form submission route
 router.post('/submit-form', 
     upload.fields([
-        { name: 'photo', maxCount: 1 },  // Changed from profilePic
-        { name: 'paymentScreenshot', maxCount: 1 }  // Changed from transactionScreenshot
+        { name: 'photo', maxCount: 1 },
+        { name: 'paymentScreenshot', maxCount: 1 }
     ]),
     async (req, res) => {
         try {
@@ -73,8 +73,8 @@ router.post('/submit-form',
                 wardNumber: req.body.wardNumber,
                 role: req.body.role,
                 upiTransactionId: req.body.upiTransactionId,
-                profilePic: req.files['photo'][0].path,
-                transactionScreenshot: req.files['paymentScreenshot'][0].path
+                profilePic: req.files['photo'][0].path, // Cloudinary URL
+                transactionScreenshot: req.files['paymentScreenshot'][0].path // Cloudinary URL
             };
 
             const form = new Form(formData);
@@ -94,77 +94,5 @@ router.post('/submit-form',
         }
     }
 );
-
-
-// // Apply CORS middleware
-
-
-// // API endpoint for form submission
-// router.get('/success',async (req,res) => {
-//     res.status(200).json({
-//         message: "Connection successfull"
-//     })
-// })
-// router.post('/submit-form', 
-//     upload.fields([
-//         { name: 'profilePic', maxCount: 1 },
-//         { name: 'transactionScreenshot', maxCount: 1 }
-//     ]),
-//     async (req, res) => {
-//         try {
-//             // Validate if files were uploaded
-//             if (!req.files || !req.files['profilePic'] || !req.files['transactionScreenshot']) {
-//                 return res.status(400).json({ error: 'Please upload both profile picture and transaction screenshot' });
-//             }
-
-//             // Create new form document
-//             const formData = {
-//                 name: req.body.name,
-//                 age: parseInt(req.body.age),
-//                 wardNumber: req.body.wardNumber,
-//                 role: req.body.role,
-//                 upiTransactionId: req.body.upiTransactionId,
-//                 profilePic: req.files['profilePic'][0].path,
-//                 transactionScreenshot: req.files['transactionScreenshot'][0].path
-//             };
-
-//             // Basic validation
-//             if (!formData.name || !formData.age || !formData.wardNumber || 
-//                 !formData.role || !formData.upiTransactionId) {
-//                 return res.status(400).json({ error: 'All fields are required' });
-//             }
-
-//             // Create and save the form document
-//             const form = new Form(formData);
-//             await form.save();
-
-//             res.status(201).json({
-//                 message: 'Form submitted successfully',
-//                 formId: form._id
-//             });
-
-//         } catch (error) {
-//             console.error('Error submitting form:', error);
-//             res.status(500).json({
-//                 error: 'Error submitting form',
-//                 details: error.message
-//             });
-//         }
-//     }
-// );
-
-// // Error handling middleware
-// router.use((error, req, res, next) => {
-//     if (error instanceof multer.MulterError) {
-//         if (error.code === 'LIMIT_FILE_SIZE') {
-//             return res.status(400).json({
-//                 error: 'File size is too large. Max limit is 5MB'
-//             });
-//         }
-//     }
-//     res.status(500).json({
-//         error: error.message
-//     });
-// });
 
 module.exports = router;
