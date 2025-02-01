@@ -11,7 +11,7 @@ const rootRouter = require('./routes/index');
 app.use(bodyParser.json());
 
 app.use(cors({
-  origin: 'https://gct-frontend-p2nw.vercel.app/',  
+  origin: 'https://gct-frontend-p2nw.vercel.app',  
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true  // Allow credentials
