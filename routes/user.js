@@ -43,10 +43,19 @@ const upload = multer({
 
 // CORS configuration remains the same
 const corsOptions = {
-    origin: 'https://ayushpandey02.github.io/gct/',
-    methods: ['POST', 'GET'],
+    origin: [
+        'https://ayushpandey02.github.io',  // Your Github Pages domain
+        'http://127.0.0.1:5500',            // Local development
+        'http://localhost:5500'             // Also for local development
+    ],
+    methods: ['POST', 'GET', 'OPTIONS'],    // Added OPTIONS method
     credentials: true,
-    allowedHeaders: ['Content-Type']
+    allowedHeaders: [
+        'Content-Type', 
+        'Authorization',
+        'X-Requested-With',
+        'Accept'
+    ]
 };
 
 router.use(cors(corsOptions));
