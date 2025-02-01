@@ -51,6 +51,12 @@ const corsOptions = {
 
 router.use(cors(corsOptions));
 
+router.get('/success', (req,res) => {
+    res.status(200).json({
+        message: 'Connection Successful'
+    });
+})
+
 // Modified form submission route
 router.post('/submit-form', 
     upload.fields([
