@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-require("dotenv").config;
+require("dotenv").config(); // Ensure dotenv is configured if this file is run standalone (though index.js usually handles it)
 
-mongoose.connect('mongodb+srv://admin:admin123@cluster0.fljruz9.mongodb.net/gct');
+mongoose.connect(process.env.MONGO_URI);
 
 const formSchema = new mongoose.Schema({
     name: {

@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require('cors');
-require("dotenv").config;
+require("dotenv").config(); // Fixed: Added ()
 const bodyParser = require('body-parser')
-const port = 3000;
+const port = process.env.PORT || 3000;
 const app = express();
 
 const rootRouter = require('./routes/index');
@@ -11,7 +11,7 @@ const rootRouter = require('./routes/index');
 app.use(bodyParser.json());
 
 app.use(cors({
-  origin: 'https://goregaonchampionstrophy.vercel.app',  
+  origin: process.env.FRONTEND_URI || 'http://localhost:5174',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true  // Allow credentials
